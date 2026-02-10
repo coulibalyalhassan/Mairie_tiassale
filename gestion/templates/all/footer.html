@@ -1,0 +1,114 @@
+<!-- Footer -->
+    <footer class="footer bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                {% for footer in footers %}
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h4 class="mb-4">
+                        {% if footer.logo %}
+                        <img src="{{ footer.logo.url }}" alt="Logo Mairie" height="50" class="me-2">
+                        {% endif %}
+                        <strong>{{ footer.nom_mairie }}</strong>
+                    </h4>
+                    <p>{{ footer.slogan }}</p>
+                    <div class="social-links mt-3">
+                        {% for footer_link in footer_links %}
+                          {% if footer_link.lien_reseau and footer_link.icon_reseau %}
+                        <a href="{{ footer_link.lien_reseau|default:'' }}" class="me-3"><i class="fab {{ footer_link.icon_reseau|default:'' }}"></i></a>
+                          {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-4">Navigation</h5>
+                    <ul class="list-unstyled">
+                        {% for footer_link in footer_links %}
+                        <li class="mb-2"><a href="{{ footer_link.lien_page }}" class="text-white-50">{{ footer_link.nom_page }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-4">Services Mairie</h5>
+                    <ul class="list-unstyled">
+                        {% for footer_link in footer_links %}
+                        <li class="mb-2"><a href="services.html#{{ footer_link.modal_service|default:'' }}" class="text-white-50">{{ footer_link.nom_service|default:"" }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>      
+                <div class="col-lg-3 text-center">
+                    {% for footer in footers %}
+                    <h5 class="mb-4 text-white">République de Côte d'Ivoire</h5>
+                    <div class="map-container mb-3">
+                        <img src="{{ footer.image.url }}" alt="Carte CIV" class="img-fluid civ-map-footer">
+                    </div>
+                    {% endfor %}
+                    <div class="motto-horizontal">
+                        <span class="motto-item orange">UNION</span>
+                        <span class="motto-divider"></span>
+                        <span class="motto-item white">DISCIPLINE</span>
+                        <span class="motto-divider"></span>
+                        <span class="motto-item green">TRAVAIL</span>
+                    </div>
+                </div>
+            </div>          
+            <hr class="bg-white my-4">          
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    {% for footer in footers %}
+                    <p class="mb-0">&copy; {{ footer.annee_copyright }} {{ footer.nom_mairie }}. Tous droits réservés.</p>
+                    {% endfor %}
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0">
+                        <a href="#" class="text-white-50 me-3">Mentions légales</a>
+                        <a href="#" class="text-white-50">Politique de confidentialité</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+<style>
+/* Style pour la carte */
+.civ-map-footer {
+    max-height: 100px;
+    transition: all 0.3s ease;
+}
+
+.civ-map-footer:hover {
+    filter: none; /* Affiche les couleurs originales au survol si désiré */
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Alignement de la devise */
+.motto-horizontal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.motto-item {
+    font-weight: 800;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.motto-divider {
+    width: 4px;
+    height: 4px;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 50%;
+}
+
+/* Couleurs du Drapeau */
+.motto-item.orange { color: #FF8200; }
+.motto-item.white  { color: #FFFFFF; }
+.motto-item.green  { color: #009E60; }
+
+@media (max-width: 768px) {
+    .motto-item { font-size: 0.8rem; }
+}
+</style>

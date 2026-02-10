@@ -1,0 +1,159 @@
+{% load static %}
+<!-- Navigation rapide -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="#naissance" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-baby me-1"></i>Naissance
+                    </a>
+                    <a href="#mariage" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-heart me-1"></i>Mariage
+                    </a>
+                    <a href="#deces" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-skull me-1"></i>Décès
+                    </a>
+                    <a href="#pacs" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-handshake me-1"></i>PACS
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% for t in en_tetes %}
+<!-- Services d'État Civil Détails -->
+<section id="services" class="py-5">
+    <div class="container py-5">
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto text-center">
+                <span class="badge bg-primary rounded-pill px-4 py-2 mb-3">{{ t.titre }}</span>
+                <h2 class="fw-bold mb-3">{{ t.sous_titre }}</h2>
+                <p class="text-muted lead">{{ t.description }}</p>
+            </div>
+        </div>
+{% endfor %}
+        <!-- Service 1: Acte de Naissance -->
+      {% for s in services %}
+        <div id="{{ s.type_service }}" class="service-detail-card mb-5">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="text-center mb-4">
+                                <div class="service-icon-lg mx-auto mb-3">
+                                    <i class="fas fa-{{ s.icon }} fa-3x text-primary"></i>
+                                </div>
+                                <h3 class="fw-bold mb-2">{{ s.nom }}</h3>
+                                <span class="badge bg-success">Service en ligne</span>
+                            </div>
+                            <div class="service-quick-info">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Délai</small>
+                                        <p class="mb-0 fw-bold">{{ s.delai }}</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Coût</small>
+                                        <p class="mb-0 fw-bold">{{ s.tarif }}</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas  text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Horaires</small>
+                                        <p class="mb-0 fw-bold">{{ s.horaire }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <h4 class="fw-bold mb-4">Détails complets - Acte de Naissance</h4>                          
+                            <p class="mb-4">{{ s.description }}</p>                            
+                            <h5 class="fw-bold mb-3">Pièces requises</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="alert alert-primary">
+                                        <h6 class="fw-bold"><i class="fas  me-2"></i>Pour une demande en ligne</h6>
+                                        <ul class="mb-0 ps-3">
+                                           {% for piece in s.servicelist_set.all %}                                                                                          
+                                              <li>{{ piece.pieces_requises_online }}</li>                                               
+                                           {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="alert alert-secondary">
+                                        <h6 class="fw-bold"><i class="fas me-2"></i>Pour une demande sur place</h6>
+                                        <ul class="mb-0 ps-3">
+                                            {% for piece in s.servicelist_set.all %}                                              
+                                              <li>{{ piece.pieces_requises_place }}</li>                                                                                        
+                                           {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Restrictions d'accès :</strong> {{ s.conditions }}
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-4">                 
+                                <div>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-{{ forloop.counter }}">
+                                        <i class="fas fa-paper-plane me-2"></i>Faire une demande
+                                    </button>
+                                    <button class="btn btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#infoNaissanceModal">
+                                        <i class="fas fa-info-circle me-2"></i>Plus d'infos
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        {% endfor %}  
+    </div>
+</section>
+
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-body text-center p-5">
+                <i class="fas fa-check-circle fa-4x text-success mb-4"></i>
+                <h3 class="fw-bold">Merci !</h3>
+                {% if messages %}
+                    {% for message in messages %}
+                        <p class="lead text-muted">{{ message|linebreaksbr }}</p>
+                    {% endfor %}
+                {% endif %}
+                <button type="button" class="btn btn-success px-5 rounded-pill" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+<script>
+    // On s'assure que Bootstrap est chargé avant d'exécuter
+    window.addEventListener('load', function() {
+        const modalElement = document.getElementById('successModal');
+        if (modalElement) {
+            const myModal = new bootstrap.Modal(modalElement);
+            myModal.show();
+        }
+    });
+</script>
+{% endif %}

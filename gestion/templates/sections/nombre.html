@@ -1,0 +1,214 @@
+<section class="circular-data py-2"> <div class="container">
+        <div class="row align-items-center">          
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                {% for nombre in nombres %}
+                <div class="city-radar-container">
+                    <div class="radar-center">
+                        <div class="center-content">
+                            <div id="center-icon"><i class="fas fa-city"></i></div>
+                            <span class="city-name">{{ nombre.nom_ville }}</span>
+                        </div>
+                    </div>
+                    <svg viewBox="0 0 400 400" class="radar-svg">
+                        <path class="radar-segment quartiers" d="M200,200 L200,20 A180,180 0 0,1 355.8,110 Z" data-value="{{ nombre.nombre_quartiers }}" data-label="Quartiers" data-icon="fa-map-signs" data-color="#3b82f6" />
+                        <path class="radar-segment habitants" d="M200,200 L355.8,110 A180,180 0 0,1 355.8,290 Z" data-value="{{ nombre.nombre_habitants }}" data-label="Habitants" data-icon="fa-users" data-color="#10b981" />
+                        <path class="radar-segment villages" d="M200,200 L355.8,290 A180,180 0 0,1 200,380 Z" data-value="{{ nombre.nombre_villages }}" data-label="Villages" data-icon="fa-home" data-color="#f59e0b" />
+                        <path class="radar-segment hopitaux" d="M200,200 L200,380 A180,180 0 0,1 44.2,290 Z" data-value="{{ nombre.nombre_hopitaux }}" data-label="Hôpitaux" data-icon="fa-hospital" data-color="#ef4444" />
+                        <path class="radar-segment ecoles" d="M200,200 L44.2,290 A180,180 0 0,1 44.2,110 Z" data-value="{{ nombre.nombre_ecoles }}" data-label="Écoles" data-icon="fa-graduation-cap" data-color="#8b5cf6" />
+                        <path class="radar-segment Km²" d="M200,200 L44.2,110 A180,180 0 0,1 200,20 Z" data-value="{{ nombre.nombre_services }}" data-label="Superfices" data-icon="fa-ruler" data-color="#ec4899" />
+                    </svg>
+                    {% endfor %}
+
+                    <div class="info-display">
+                        <div id="info-icon-box"><i class="fas fa-mouse-pointer"></i></div>
+                        <h3 id="info-value">Explorez</h3>
+                        <p id="info-label">votre ville</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5 offset-lg-1 text-center text-lg-start">
+                <div class="promo-card">
+                    <h2 class="fw-bold mb-3">Découvrez l'Histoire de Tiassalé</h2>
+                    <p class="text-white-50 mb-4">Explorez les richesses culturelles et historiques de notre belle cité.</p>
+                    <a href="histoire.html" class="btn btn-primary-custom">Histoire De Tiassalé <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<style>
+    .circular-data { background: #261565; color: white; min-height: 500px; overflow: visible; }
+
+    /* Conteneur Radar (réduit pour tenir à gauche) */
+    .city-radar-container {
+        position: relative;
+        width: 400px; /* Taille ajustée pour la colonne */
+        height: 400px;
+        margin: 0 auto;
+    }
+
+    .radar-svg {
+        width: 100%; height: 100%;
+        filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+        transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
+    }
+
+    .radar-segment {
+        fill: rgba(255, 255, 255, 0.05);
+        stroke: rgba(255, 255, 255, 0.1);
+        stroke-width: 1;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        transform-origin: center;
+    }
+
+    .radar-segment:hover {
+        fill: var(--hover-color, #fff);
+        filter: drop-shadow(0 0 30px var(--hover-color));
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .radar-center {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100px; height: 100px; /* Taille ajustée */
+        background: radial-gradient(circle, #af0715 0%, #000 100%);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50%;
+        z-index: 10;
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Style du contenu de droite */
+    .promo-card img {
+        transition: transform 0.5s ease;
+        border: 2px solid rgba(255,255,255,0.1);
+    }
+    .promo-card img:hover { transform: scale(1.03); }
+
+    .btn-primary-custom {
+        background: #3b82f6;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-block;
+        transition: all 0.3s;
+    }
+    .btn-primary-custom:hover {
+        background: #1d4ed8;
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Info Display repositionné sous le radar */
+    .info-display {
+        position: absolute;
+        bottom: 0px; left: 0; right: 0;
+        z-index: 15;
+        pointer-events: none;
+    }
+    #info-value { font-size: 2.2rem; font-weight: 900; }
+    #info-label { font-size: 0.8rem; letter-spacing: 4px; color: #3b82f6; font-weight: bold; }
+</style>
+<style>
+    .circular-data { background: #261565; color: white; min-height: 50px; display: flex; align-items: center; }
+
+    .city-radar-container {
+        position: relative;
+        width: 500px;
+        height: 500px;
+        margin: 0 auto;
+        padding: 20px 0;
+    }
+
+    .radar-svg {
+        width: 100%; height: 100%;
+        filter: drop-shadow(0 0 20px rgba(86, 35, 35, 0.8));
+        transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
+    }
+
+    .radar-segment {
+        fill: rgba(104, 16, 16, 0.03);
+        stroke: rgba(255, 255, 255, 0.1);
+        stroke-width: 1;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        transform-origin: center;
+    }
+
+    /* Effet d'explosion au survol */
+    .radar-segment:hover {
+        fill: var(--hover-color, #fff);
+        filter: drop-shadow(0 0 30px var(--hover-color));
+        stroke: white;
+        stroke-width: 3;
+    }
+
+    .radar-center {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 140px; height: 140px;
+        background: radial-gradient(circle, #af0715 0%, #000 100%);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50%;
+        z-index: 10;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    #center-icon { font-size: 2rem; color: #3b82f6; margin-bottom: 5px; transition: 0.3s; }
+    .city-name { font-weight: 900; font-size: 0.7rem; letter-spacing: 3px; color: #aaa; }
+
+    .info-display {
+        position: absolute;
+        bottom: 20px; left: 0; right: 0; z-index: 15;
+        animation: fadeInUp 0.5s ease forwards;
+        pointer-events: none;
+    }
+
+    #info-icon-box { font-size: 1.5rem; margin-bottom: 10px; color: #3b82f6; opacity: 0.5; }
+    #info-value { font-size: 2.5rem; font-weight: 900; line-height: 1; margin: 0; }
+    #info-label { text-transform: uppercase; letter-spacing: 6px; color: #3b82f6; font-weight: bold; }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+<script>
+    const segments = document.querySelectorAll('.radar-segment');
+    const displayValue = document.getElementById('info-value');
+    const displayLabel = document.getElementById('info-label');
+    const displayIcon = document.getElementById('info-icon-box');
+    const centerIcon = document.getElementById('center-icon');
+
+    segments.forEach(seg => {
+        // Appliquer la couleur dynamique définie dans l'attribut data-color
+        const color = seg.getAttribute('data-color');
+        seg.style.setProperty('--hover-color', color);
+
+        seg.addEventListener('mouseenter', () => {
+            // Mise à jour des textes
+            displayValue.innerText = seg.getAttribute('data-value');
+            displayLabel.innerText = seg.getAttribute('data-label');
+            displayLabel.style.color = color;
+            
+            // Mise à jour des icônes
+            const iconClass = seg.getAttribute('data-icon');
+            displayIcon.innerHTML = `<i class="fas ${iconClass}" style="color: ${color}"></i>`;
+            centerIcon.innerHTML = `<i class="fas ${iconClass}"></i>`;
+            centerIcon.style.color = color;
+
+            // Petit effet de rotation du radar
+            document.querySelector('.radar-svg').style.transform = `rotate(5deg)`;
+        });
+
+        seg.addEventListener('mouseleave', () => {
+            document.querySelector('.radar-svg').style.transform = `rotate(0deg)`;
+        });
+    });
+</script>

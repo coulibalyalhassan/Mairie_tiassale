@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail de l'actualité - Mairie d'Abidjan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* TECHNIQUE POUR LARGEUR TOTALE ÉCRAN */
+        .full-width-carousel {
+            width: 100vw;
+            position: relative;
+            left: 40%;
+            right: 40%;
+            margin-left: -40vw;
+            margin-right: -40vw;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 580px; /* Augmenté à 600px pour un bel effet large */
+            object-fit: cover; /* Remplit tout l'espace */
+            object-position: cover; /* Centre l'image */
+        }
+
+        /* Amélioration des flèches */
+        .carousel-control-prev-icon, .carousel-control-next-icon {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            padding: 20px;
+        }
+    </style>
+</head>
+</head>
+<body>
+<section class="actualite-detail-unique py-5">
+    <div class="container">
+        <div class="mb-5">
+            <a href="{% url 'gestion:get_page' slug='actualites' %}" class="text-decoration-none text-dark fw-bold">
+                <i class="fas fa-long-arrow-alt-left me-2"></i>Retour
+            </a>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <header class="mb-5 text-center">
+                    <h1 class="display-3 fw-bold mb-4">{{ details.titre }}</h1>
+                    <div class="header-line mx-auto mb-4" style="width: 100px; height: 5px; background: #056e28;"></div>
+                </header>
+
+                <div class="article-long-text mb-5" style="font-size: 1.2rem; line-height: 2; color: #1a1a1a; text-align: justify;">
+                    {% for d in details %}
+                        <p>{{ d.large_description }}</p>
+                    {% endfor %}                
+                </div>
+                <hr class="my-5">   
+                <div id="actualiteCarousel" class="carousel slide shadow-sm full-width-carousel" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for d in details %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ d.images_actualite.url }}" alt="{{ d.alt }}">
+                        </div>
+                        {% endfor %}
+                        
+                        <button class="carousel-control-prev" type="button" data-bs-target="#actualiteCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Précédent</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#actualiteCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Suivant</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

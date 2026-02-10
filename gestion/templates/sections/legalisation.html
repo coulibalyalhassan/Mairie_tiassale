@@ -1,0 +1,234 @@
+<section class="py-5" id="guichet-soumission">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="fw-bold">Guichet de Légalisation en Ligne</h2>
+            <p class="text-muted">Sélectionnez le document que vous souhaitez soumettre pour légalisation.</p>
+        </div>
+
+        <div class="row g-4 justify-content-center" id="guichet-container">
+        {% for leg in legalisations %}
+            <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="{{ forloop.counter }}00">
+                <div class="upload-card {% if leg.is_highlight %}highlight{% endif %}" id="card-{{ leg.id }}">
+                    <div class="card-icon"><i class="fas {{ leg.icone }}"></i></div>
+                    <h4>{{ leg.titre }}</h4>
+                    <p>{{ leg.sous_titre }}</p>
+
+                    <form class="upload-form" enctype="multipart/form-data">
+                     {% csrf_token %}
+                        <input type="hidden" name="type_id" value="{{ leg.id }}">
+                        <input type="file" name="fichier" id="file-{{ leg.id }}" class="input-file" hidden>
+                
+                        <label for="file-{{ leg.id }}" class="btn-upload">
+                            <i class="fas fa-cloud-upload-alt"></i> Choisir le fichier
+                        </label>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</section>
+<script>
+document.querySelectorAll('.input-file').forEach(input => {
+    input.addEventListener('change', function () {
+
+        if (this.files && this.files[0]) {
+
+            const file = this.files[0];
+            const form = this.closest('.upload-form');
+            const card = this.closest('.upload-card');
+            const label = card.querySelector('.btn-upload');
+            const fileName = file.name;
+
+            const formData = new FormData(form);
+
+            const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            // Animation chargement
+            label.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Envoi en cours...`;
+            label.style.background = "#6c757d";
+            label.style.pointerEvents = "none";
+
+            fetch("", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+
+                if (data.status === "success") {
+
+                    const codeDemande = data.code;
+
+                    setTimeout(() => {
+                        card.innerHTML = `
+                            <div class="success-message animate__animated animate__zoomIn text-center">
+                                <div class="success-icon mb-3">
+                                    <i class="fas fa-check-circle fa-3x text-success"></i>
+                                </div>
+
+                                <h4 class="fw-bold text-success">Document Reçu !</h4>
+
+                                <div class="alert alert-light mt-3">
+                                    <p class="mb-2">
+                                        <strong>Code de suivi :</strong><br>
+                                        <span class="badge bg-dark fs-6 px-3 py-2">
+                                            ${codeDemande}
+                                        </span>
+                                    </p>
+                                    <hr>
+                                    <p><strong>Fichier :</strong> ${fileName}</p>
+                                    <p class="mb-2">
+                                        <i class="far fa-clock"></i> Disponible dans <strong>3 heures</strong>
+                                    </p>
+                                    <p class="mb-0">
+                                        <i class="fas fa-coins"></i> Frais de timbre : <strong>500 FCFA</strong>
+                                    </p>
+                                </div>
+
+                                <p class="small text-muted mt-2">
+                                    Conservez ce code pour le retrait à la mairie.
+                                </p>
+
+                                <button onclick="window.location.reload()" 
+                                        class="btn btn-sm btn-outline-secondary mt-3">
+                                    Envoyer un autre
+                                </button>
+                            </div>
+                        `;
+                    }, 800);
+
+                } else {
+                    alert("Erreur : " + (data.message || "Une erreur est survenue."));
+                    label.innerHTML = "Réessayer";
+                    label.style.background = "";
+                    label.style.pointerEvents = "auto";
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Erreur serveur.");
+                label.innerHTML = "Réessayer";
+                label.style.background = "";
+                label.style.pointerEvents = "auto";
+            });
+        }
+    });
+});
+</script>
+<style>
+#guichet-soumission {
+    background-color: #f0f4f8;
+}
+
+.upload-card {
+    background: #ffffff;
+    padding: 40px 30px;
+    border-radius: 30px;
+    text-align: center;
+    border: 2px dashed #cbd5e0; /* Aspect "Zone de dépôt" */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    height: 100%;
+}
+
+.upload-card:hover {
+    border-color: #0061f2;
+    transform: translateY(-10px);
+    background: #fff;
+    box-shadow: 0 20px 40px rgba(0, 97, 242, 0.1);
+}
+
+.card-icon {
+    font-size: 40px;
+    color: #0061f2;
+    margin-bottom: 20px;
+}
+
+.upload-card h4 {
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.upload-card p {
+    font-size: 0.9rem;
+    color: #718096;
+    margin-bottom: 25px;
+}
+
+/* Bouton stylisé pour remplacer l'input file moche */
+.btn-upload {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #0061f2;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+    border: none;
+}
+
+.btn-upload:hover {
+    background: #0046ad;
+    box-shadow: 0 5px 15px rgba(0, 97, 242, 0.4);
+}
+
+/* Changement de style quand un fichier est sélectionné (via JS optionnel) */
+.upload-card.file-ready {
+    border-style: solid;
+    background: #eef5ff;
+}
+
+/* Version sombre pour la variante "Highlight" */
+.upload-card.highlight {
+    background: #1a202c;
+    border-color: #4a5568;
+}
+.upload-card.highlight h4 { color: #fff; }
+.upload-card.highlight .card-icon { color: #63b3ed; }
+
+/* Style du message de succès */
+.success-message {
+    padding: 10px;
+}
+
+.success-icon {
+    font-size: 50px;
+    color: #28a745;
+    margin-bottom: 15px;
+    animation: bounceIn 0.8s ease;
+}
+
+.info-alert {
+    background: rgba(40, 167, 69, 0.08);
+    border-radius: 15px;
+    padding: 15px;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    text-align: left;
+}
+
+.info-alert p {
+    margin-bottom: 5px;
+    color: #2d3748 !important;
+}
+
+.info-alert strong {
+    color: #155724;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 1; }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+/* Animation de disparition douce */
+.upload-card * {
+    transition: opacity 0.4s ease;
+}
+</style>

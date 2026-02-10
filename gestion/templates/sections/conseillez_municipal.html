@@ -1,0 +1,367 @@
+{% load static %}
+        <section class="team light-brown-bg" id="team">
+            <div class="container">
+                {% for t in en_tetes %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="herotext text-center pb-5  animated" data-animation="fadeInUp" data-animation-delay="200">
+                            <div class="lrline pb-3"><span>{{ t.titre }}</span></div>
+                            <h2>{{ t.sous_titre }}</h2>
+                            <h5 class="pt-2">{{ t.description }}</h5>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="team-carousel animated" data-animation="fadeInUp" data-animation-delay="300">
+                {% for team in teams %}
+                    <div class="block">
+                        <h1><Strong>{{ team.fonction }}</Strong></h1>
+                        <div class="pic pb-4"><img src="{{ team.image.url }}" class="img-fluid" alt=""></div>
+                        <div class="details">
+                            <h2>{{ team.nom }}</h2>
+                            <h6>{{ team.prenom }}</h6>
+                            <ul class="socialmedia pt-2">
+                                <li><a href=""><i class="lab la-twitter"></i></a></li>
+                                <li><a href=""><i class="lab la-facebook-f"></i></a></li>
+                                <li><a href=""><i class="lab la-dribbble"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </section>
+
+<style>
+/* TEAM SECTION - STYLE MODERNE & PROFESSIONNEL */
+.team {
+    position: relative;
+    overflow: hidden;
+    padding: 100px 0;
+    background: linear-gradient(135deg, #f8f5f0 0%, #f0ebe2 100%);
+}
+
+.team::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+}
+
+.light-brown-bg {
+    background: linear-gradient(135deg, #f8f5f0 0%, #f0ebe2 100%);
+}
+
+/* EN-TÊTE STYLISÉE */
+.herotext {
+    position: relative;
+    padding-bottom: 80px !important;
+}
+
+.lrline {
+    position: relative;
+    display: inline-block;
+    padding: 0 30px;
+}
+
+.lrline span {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #c5a47e;
+    position: relative;
+    padding: 0 20px;
+    background: linear-gradient(90deg, transparent, #f8f5f0, transparent);
+}
+
+.lrline::before,
+.lrline::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #c5a47e);
+    transform: translateY(-50%);
+}
+
+.lrline::before {
+    right: 100%;
+}
+
+.lrline::after {
+    left: 100%;
+    background: linear-gradient(90deg, #c5a47e, transparent);
+}
+
+.herotext h2 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2c3e50 0%, #4a6572 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 20px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.herotext h5 {
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.8;
+    font-weight: 400;
+    padding: 0 20px;
+}
+
+/* CARDS ÉQUIPE - DESIGN MODERNE */
+.team-carousel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    padding: 40px 0;
+    position: relative;
+}
+
+.block {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #c5a47e, #e8d0b3);
+}
+
+h1 {
+    text-align: center;
+    color: #c5a47e;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.block:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(197, 164, 126, 0.15);
+}
+
+.block:hover .pic img {
+    transform: scale(1.05);
+}
+
+/* PHOTO DE PROFIL */
+.pic {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 25px;
+    position: relative;
+    border-radius: 50%;
+    padding: 8px;
+    background: linear-gradient(135deg, #c5a47e, #e8d0b3);
+}
+
+.pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: transform 0.5s ease;
+    border: 4px solid white;
+}
+
+/* INFORMATIONS MEMBRE */
+.details {
+    text-align: center;
+    position: relative;
+}
+
+.details h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    position: relative;
+    display: inline-block;
+}
+
+.details h2::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 2px;
+    background: #c5a47e;
+    transition: width 0.3s ease;
+}
+
+.block:hover .details h2::after {
+    width: 80px;
+}
+
+.details h6 {
+    font-size: 1rem;
+    color: #c5a47e;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+/* RÉSEAUX SOCIAUX - STYLE ÉLÉGANT */
+.socialmedia {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.socialmedia li {
+    position: relative;
+}
+
+.socialmedia a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: white;
+    border-radius: 50%;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(197, 164, 126, 0.2);
+    text-decoration: none;
+}
+
+.socialmedia a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #c5a47e, #e8d0b3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.socialmedia a:hover::before {
+    opacity: 1;
+}
+
+.socialmedia a i {
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s ease;
+}
+
+.socialmedia a:hover i {
+    color: white;
+}
+
+.socialmedia a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(197, 164, 126, 0.3);
+}
+
+/* ANIMATIONS */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animated {
+    animation-duration: 0.8s;
+    animation-fill-mode: both;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .team {
+        padding: 60px 0;
+    }
+    
+    .herotext h2 {
+        font-size: 2.5rem;
+    }
+    
+    .team-carousel {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 20px;
+    }
+    
+    .pic {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .lrline::before,
+    .lrline::after {
+        width: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .herotext h2 {
+        font-size: 2rem;
+    }
+    
+    .pic {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .socialmedia a {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+
+/* EFFET PARALLAX */
+.team-carousel {
+    perspective: 1000px;
+}
+
+.block {
+    transform-style: preserve-3d;
+}
+
+.block:hover {
+    transform: translateY(-15px) rotateX(5deg);
+}
+</style>

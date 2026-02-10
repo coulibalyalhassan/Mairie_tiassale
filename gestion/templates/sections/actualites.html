@@ -1,0 +1,43 @@
+{% load static %}
+<section class="actualites-page py-5">
+    <div class="container">
+        {% for t in en_tetes %}
+        <!-- En-tête de la page -->
+        <div class="page-header text-center mb-5">
+            <div class="d-inline-block mb-3">
+                <div class="header-line mx-auto mb-2" style="width: 80px; height: 4px; background: #0d0e0d; border-radius: 2px;"></div>
+                <span class="text-uppercase fw-bold" style="color: #161716; letter-spacing: 1.5px;">{{ t.titre }}</span>
+            </div>
+            <h1 class="display-4 fw-bold mb-3">{{ t.sous_titre }}</h1>
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">
+                {{ t.description }}
+            </p>
+        </div>
+        {% endfor %}
+        <div class="row g-4" id="articles-grid">
+            {% for actu in actualites %}
+            <!-- Article 1 -->
+            <div class="col-lg-4 col-md-6" data-category="{{ actu.categorie }}">
+                <article class="article-card card h-100 border-0 shadow-sm overflow-hidden">
+                    <div class="position-relative">
+                        <img src="{{ actu.image.url }}" class="card-img-top" alt="Travaux rue principale" style="height: 220px; object-fit: cover;">
+                        <span class="badge position-absolute" style="top: 15px; right: 15px; background: #056e28;">{{ actu.categorie }}</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="article-meta d-flex align-items-center mb-3">
+                            <small class="text-muted"><i class="far fa-calendar me-1"></i> {{ actu.date_publication }}</small>
+                        </div>
+                        <h3 class="h4 card-title fw-bold mb-3">{{ actu.titre }}</h3>
+                        <p class="card-text text-muted mb-4">
+                           {{ actu.contenu }}
+                        </p>
+                        <a href="{% url 'gestion:detail_actualites' actu.id %}" class="btn btn-outline-primary stretched-link">{{ actu.suite }} <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+

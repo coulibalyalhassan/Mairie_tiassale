@@ -1,0 +1,101 @@
+ {% for s in services %}
+<div class="modal fade" id="modal-{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">     
+        <div class="modal-content">  
+           <form method="POST"> {% csrf_token %} 
+            <input type="hidden" name="DemandeService_id" value="{{ s.id }}">
+            <input type="hidden" name="btn_service" value="1">          
+                <div class="modal-header">
+                   <h5 class="modal-title fw-bold">
+                    <i class="fas fa-{{ s.icon }} me-2 text-primary"></i>Demande de {{ s.nom }}
+                   </h5>
+                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">  
+                    {% if s.type_service == 'naissance' %}
+                        <ul class="nav nav-tabs mb-4" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#nouveau-ne-{{ s.id }}" type="button" role="tab">
+                                    <i class="fas fa-baby me-2"></i>Nouveau-né
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#autres-{{ s.id }}" type="button" role="tab">
+                                    <i class="fas fa-user me-2"></i>Copie d'acte existant
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="nouveau-ne-{{ s.id }}" role="tabpanel">
+                                <div class="alert alert-primary mb-3"><i class="fas fa-info-circle me-2"></i>Déclaration de naissance</div>
+                                <div class="row g-3">
+                                    <div class="col-md-6"><label class="form-label fw-bold">nom *</label><input type="text" name="nom" class="form-control"></div>
+                                    <div class="col-md-6"><label class="form-label fw-bold">Prénom *</label><input type="text" name="prenom" class="form-control"></div>
+                                    <div class="col-md-6"><label class="form-label fw-bold">Date de naissance *</label><input type="date" name="date_naissance" class="form-control"></div>
+                                    <div class="col-md-6"><label class="form-label fw-bold">Lieu de naissance *</label><input type="text" name="lieu_naissance" class="form-control"></div>
+                                    <hr>
+                                    <div class="col-md-6"><label class="form-label fw-bold">Nom du père *</label><input type="text" name="nom_pere" class="form-control"></div>
+                                    <div class="col-md-6"><label class="form-label fw-bold">Nom de la mère *</label><input type="text" name="nom_mere" class="form-control"></div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="autres-{{ s.id }}" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-md-6"><label class="form-label fw-bold">Année d'acte *</label><input type="number" name="annee_acte" class="form-control" min="1900"></div>
+                                    <div class="col-md-6"><label class="form-label fw-bold">Numéro d'extraits</label><input type="text" name="numero_extrait" class="form-control"></div>
+                                    <div class="col-md-12"><label class="form-label fw-bold">Nom concerné</label><input type="text" name="nom_concerne" class="form-control"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% elif s.type_service == 'mariage' %}
+                        <div class="alert alert-primary mb-3"><i class="fas fa-ring me-2"></i>Informations sur le mariage</div>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label fw-bold">Date de mariage *</label><input type="date" name="date_mariage" class="form-control" required></div>
+                            <div class="col-md-6"><label class="form-label fw-bold">Lieu de mariage *</label><input type="text" name="lieu_mariage" class="form-control" required></div>
+                            <h6 class="mt-4 border-bottom pb-2">Les Époux</h6>
+                            <div class="col-md-6"><label class="form-label fw-bold">Nom de l'époux 1 *</label><input type="text" name="nom_epoux1" class="form-control" required></div>
+                            <div class="col-md-6"><label class="form-label fw-bold">Nom de l'époux 2 *</label><input type="text" name="nom_epoux2" class="form-control" required></div>
+                        </div>
+
+                    {% elif s.type_service == 'deces' %}
+                        <div class="alert alert-secondary mb-3"><i class="fas fa-cross me-2"></i>Informations du défunt</div>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label fw-bold">Nom du défunt *</label><input type="text" name="nom_defunt" class="form-control" required></div>
+                            <div class="col-md-6"><label class="form-label fw-bold">Date de décès *</label><input type="date" name="date_deces" class="form-control" required></div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Votre lien avec le défunt *</label>
+                                <select class="form-select" name="lien_parente" required>
+                                    <option value="conjoint">Conjoint(e)</option>
+                                    <option value="enfant">Enfant</option>
+                                    <option value="parent">Parent</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+                        </div>
+                      {% endif %}
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6 class="fw-bold mb-3 border-bottom pb-2">Vos coordonnées (Demandeur)</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6"><input type="text" name="nom_demandeur" placeholder="Nom du demandeur" class="form-control" required></div>
+                            <div class="col-md-6"><input type="email" name="email_demandeur" placeholder="Email du demandeur" class="form-control" required></div>
+                            <div class="col-md-12"><input type="tel" name="tel_demandeur" placeholder="Téléphone du demandeur" class="form-control" required></div>
+                        </div>
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" required id="certif">
+                            <label class="form-check-label small" for="certif">Je certifie l'exactitude des informations fournies.</label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer px-0 pb-0 mt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Envoyer la demande
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
