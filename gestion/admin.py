@@ -219,9 +219,9 @@ class SliderAdmin(admin.ModelAdmin):
 # --- ADMIN EN-TETE ---
 @admin.register(En_tete)
 class EnTeteAdmin(admin.ModelAdmin):
-    list_display = ('titre', 'section', 'sous_titre')
+    list_display = ('titre', 'section', 'sous_titre','description',)
     list_filter = ('section',)
-    search_fields = ('titre', 'descriprion')
+    search_fields = ('titre', 'description',)
     # Permet de lier rapidement une section avec recherche
     autocomplete_fields = ['section']
 
@@ -242,7 +242,7 @@ class BannerAdmin(admin.ModelAdmin):
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    list_display = (image_preview, 'titre')
+    list_display = (image_preview, )
 
 @admin.register(SiteVisite)
 class SiteVisiteAdmin(admin.ModelAdmin):
@@ -448,7 +448,7 @@ class FooterLinkAdmin(admin.ModelAdmin):
 
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ('nom', 'prenom','fonction', 'aperçu_image')
+    list_display = ('nom', 'prenom','fonction', 'icon','aperçu_image')
     readonly_fields = ('aperçu_image_grande',)
 
     def aperçu_image(self, obj):

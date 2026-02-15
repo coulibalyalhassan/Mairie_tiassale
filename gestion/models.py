@@ -92,7 +92,7 @@ class DemandeService(models.Model):
         default='attente'
     )
     date_soumission = models.DateTimeField(auto_now_add=True)
-    date_retrait = models.DateTimeField(null=True, blank=True)
+    date_retrait = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     nom_demandeur = models.CharField(max_length=100) 
     email_demandeur = models.EmailField()
     tel_demandeur = models.CharField(max_length=20)
@@ -140,7 +140,9 @@ class Actualite(models.Model):
             ('Annonce', 'Annonce'),
             ('Travaux', 'Travaux'),
             ('Culture', 'Culture'),
-            ('Sport', 'Sport')],default="Annonce")
+            ('Sport', 'Sport'),
+            ('Education', 'Education')],
+            default="Annonce")
     suite = models.CharField(max_length=255)
     date_publication = models.DateTimeField(default=timezone.now)
 
@@ -152,7 +154,7 @@ class Actualite(models.Model):
     
 class DetailActualite(models.Model):
     actualite = models.ForeignKey(Actualite, on_delete=models.CASCADE, related_name='details')
-    large_description = models.TextField()
+    large_description = models.TextField(blank=True, null=True)
     images_actualite = models.ImageField(upload_to="detail_actu")
     alt = models.CharField(max_length=255, blank=True)
     titre = models.CharField(max_length=255, blank=True, null=True)
@@ -223,12 +225,12 @@ class Maire(models.Model):
     nom = models.CharField(max_length=255, blank=True, null=True)
     localiter = models.CharField(max_length=255, blank=True, null=True)
     eloge = models.CharField(max_length=255, blank=True, null=True)
-    presentation = models.TextField()
+    presentation = models.TextField(blank=True, null=True)
     diplome = models.CharField(max_length=255)
     icon = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return self.nom
+        return f"({self.nom} titulaire d'un(e) {self.diplome})"
     
 class Slider(models.Model):
     titre = models.CharField(max_length=255)
@@ -244,17 +246,16 @@ class En_tete(models.Model):
     section = models.ForeignKey(Section , on_delete=models.CASCADE)
     titre = models.CharField( max_length=500)
     sous_titre = models.CharField(max_length=500, blank=True)
-    descriprion = models.CharField(max_length=500)
+    description = models.CharField(max_length=500)
 
     def __str__(self):
         return self.titre
     
 class Image(models.Model):
     image = models.ImageField(upload_to="image")
-    titre = models.CharField(max_length=250)
 
     def __str__(self):
-        return self.titre
+        return f"Image {self.id}"
     
 class Banner(models.Model):
     choix=[
@@ -263,6 +264,7 @@ class Banner(models.Model):
         ('services', 'Services'),
         ('contact', 'Contact'),
         ('actualites', 'Actualités'),
+        ('histoire', 'Histoire'),
     ]
     page = models.CharField(max_length=50, choices=choix, unique=True)
     image = models.ImageField(upload_to="banner")
@@ -336,13 +338,14 @@ class FooterLink(models.Model):
         return self.nom_page
 
 class Team(models.Model):
-    nom = models.CharField(max_length=255)
-    prenom = models.CharField(max_length=255)
-    image = models.ImageField(upload_to="team")
-    fonction = models.CharField(max_length=255,default="Conseiller municipal")
+    nom = models.CharField(max_length=255, blank=True, null=True)
+    prenom = models.CharField(max_length=255, blank=True, null=True)
+    image = models.ImageField(upload_to="team", blank=True, null=True)
+    fonction = models.CharField(max_length=255,default="Conseiller municipal", blank=True, null=True)
+    icon = models.JSONField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.prenom} {self.nom}"
+        return f"{self.prenom} {self.nom} {self.id}"
 
 class Legislation(models.Model):
     titre = models.CharField(max_length=255)
@@ -357,6 +360,12 @@ class DemandeLegalisation(models.Model):
     fichier = models.FileField(upload_to="demandes/")
     date = models.DateTimeField(auto_now_add=True)
     code_suivi = models.CharField(max_length=20, unique=True, blank=True)
+    statut = models.CharField(max_length=20, choices=[
+            ('attente', 'En attente'),
+            ('en_cours', 'En cours'),
+            ('traitee', 'Traité'),
+            ('rejete', 'Rejeté'),
+        ], default='En attente')
 
     def save(self, *args, **kwargs):
         if not self.code_suivi:

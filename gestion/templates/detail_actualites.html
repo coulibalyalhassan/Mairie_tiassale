@@ -45,13 +45,17 @@
         <div class="row justify-content-center">
             <div class="col-lg-9">
                 <header class="mb-5 text-center">
-                    <h1 class="display-3 fw-bold mb-4">{{ details.titre }}</h1>
+                    {% if details.titre %}
+                    <h1 class="display-3 fw-bold mb-4">{{ details.titre|default:'' }}</h1>
+                    {% endif %}
                     <div class="header-line mx-auto mb-4" style="width: 100px; height: 5px; background: #056e28;"></div>
                 </header>
 
                 <div class="article-long-text mb-5" style="font-size: 1.2rem; line-height: 2; color: #1a1a1a; text-align: justify;">
                     {% for d in details %}
-                        <p>{{ d.large_description }}</p>
+                        {% if d.large_description %}
+                        <p>{{ d.large_description|default:'' }}</p>
+                        {% endif %}
                     {% endfor %}                
                 </div>
                 <hr class="my-5">   
@@ -59,7 +63,9 @@
                     <div class="carousel-inner">
                         {% for d in details %}
                         <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            {% if d.images_actualite %}
                             <img src="{{ d.images_actualite.url }}" alt="{{ d.alt }}">
+                            {% endif %}
                         </div>
                         {% endfor %}
                         

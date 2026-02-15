@@ -26,12 +26,22 @@
                             <a class="nav-link " href="{{ nav_link.lien_page }}"><i class="fas me-1"></i> {{ nav_link.nom_page }}</a>
                         </li>
                         {% endfor %}
+                        <li>
+                            {% if user.is_authenticated and user.is_staff %}
+                            <li class="nav-item">
+                                <a class="nav-link fw-bold text-warning" href="{% url 'gestion:dashboard_mairie' %}">
+                                    <i class="fas me-1"></i>Administration
+                                </a>
+                            </li>
+                            {% else %}
+                        </li>
                     </ul>
                     <div class="d-flex ms-lg-3">
                         <a href="contact.html" class="btn btn-primary btn-sm">
                             <i class="fas fa-calendar-check me-1"></i> Prendre RDV
                         </a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </nav>

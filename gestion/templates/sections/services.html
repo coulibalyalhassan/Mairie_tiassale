@@ -14,17 +14,16 @@
                     <a href="#deces" class="btn btn-outline-primary btn-sm">
                         <i class="fas fa-skull me-1"></i>Décès
                     </a>
-                    <a href="#pacs" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-handshake me-1"></i>PACS
-                    </a>
-                    
+                    <a href="#guichet-container" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-file-lines me-1"></i>Légalisation
+                    </a>                  
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-{% for t in en_tetes %}
+{% for t in en_tetes_services %}
 <!-- Services d'État Civil Détails -->
 <section id="services" class="py-5">
     <div class="container py-5">
@@ -79,7 +78,7 @@
                 <div class="col-lg-8">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-4">
-                            <h4 class="fw-bold mb-4">Détails complets - Acte de Naissance</h4>                          
+                            <h4 class="fw-bold mb-4">Détails complets - {{ s.nom }}</h4>                          
                             <p class="mb-4">{{ s.description }}</p>                            
                             <h5 class="fw-bold mb-3">Pièces requises</h5>
                             <div class="row">
@@ -113,9 +112,6 @@
                                 <div>
                                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-{{ forloop.counter }}">
                                         <i class="fas fa-paper-plane me-2"></i>Faire une demande
-                                    </button>
-                                    <button class="btn btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#infoNaissanceModal">
-                                        <i class="fas fa-info-circle me-2"></i>Plus d'infos
                                     </button>
                                 </div>
                             </div>

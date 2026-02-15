@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mairie - Administration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { background-color: #f4f7fe; font-family: 'Inter', sans-serif; color: #334155; }
+        
+        /* Sidebar Design */
+        .sidebar { height: 100vh; background: #0f172a; color: white; position: fixed; width: 260px; transition: all 0.3s; z-index: 1000; }
+        .sidebar .nav-link { color: #94a3b8; padding: 12px 20px; border-radius: 8px; margin: 4px 15px; transition: 0.3s; cursor: pointer; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: #1e293b; color: #3b82f6; }
+        
+        .main-content { margin-left: 260px; padding: 30px; transition: all 0.3s; }
+        
+        /* Dashboard Cards */
+        .stat-card { border: none; border-radius: 15px; padding: 20px; background: white; shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .custom-table-card { border: none; border-radius: 15px; background: white; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
+        
+        /* Modals & Details */
+        .detail-label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 2px; }
+        .detail-value { font-size: 0.95rem; font-weight: 600; color: #1e293b; margin-bottom: 12px; }
+        .section-header { background: #f8fafc; padding: 10px 15px; border-radius: 8px; font-weight: 700; margin-bottom: 15px; color: #2563eb; }
+
+        .dash-section { display: none; }
+        .dash-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-260px); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+    <div class="p-4"><h5 class="fw-bold"><i class="bi bi-bank me-2"></i>MAIRIE ADMIN</h5></div>
+    <nav class="nav flex-column mt-3">
+        <a class="nav-link active" onclick="switchTab('actes', this)"><i class="bi bi-file-earmark-text me-2"></i>Demandes d'Actes</a>
+        <a class="nav-link" onclick="switchTab('legalisations', this)"><i class="bi bi-shield-check me-2"></i>Légalisations</a>
+        <a class="nav-link" onclick="switchTab('messages', this)"><i class="bi bi-chat-left-dots me-2"></i>Messages </a>
+        <hr class="mx-3 text-secondary">
+        
+    </nav>
+</div>
+
+<div class="main-content">
+    <div class="d-flex d-lg-none justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold m-0">Admin</h4>
+        <button class="btn btn-dark" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <small class="text-muted">Dossiers Actifs</small>
+                <h3 class="fw-bold text-primary m-0">{{ stats.services }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <small class="text-muted">Actes Traités</small>
+                <h3 class="fw-bold text-success m-0">{{ stats.traitees }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <small class="text-muted">Légalisations</small>
+                <h3 class="fw-bold text-info m-0">{{ stats.legalisations }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <small class="text-muted">Légalisations Traitées</small>
+                <h3 class="fw-bold text-info m-0">{{ stats.legalisees }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <small class="text-muted">Messages</small>
+                <h3 class="fw-bold text-warning m-0">{{ stats.messages }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-actes" class="dash-section active">
+        <h4 class="fw-bold mb-3">Demandes d'actes à traiter</h4>
+        <div class="card custom-table-card mb-5">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">N°</th><th>Service</th><th>Demandeur</th><th>Statut</th><th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in demandes_services %}
+                        <tr id="row-{{ d.id }}">
+                            <td class="ps-4 fw-bold">#{{ d.numero_demande }}</td>
+                            <td><span class="badge bg-blue-subtle text-primary border border-primary-subtle">{{ d.service.nom }}</span></td>
+                            <td>{{ d.nom_demandeur }}</td>
+                            <td>
+                                <select class="form-select form-select-sm status-changer" data-id="{{ d.id }}">
+                                    <option value="attente" {% if d.statut == 'attente' %}selected{% endif %}>En attente</option>
+                                    <option value="en_cours" {% if d.statut == 'en_cours' %}selected{% endif %}>En cours</option>
+                                    <option value="pret" {% if d.statut == 'pret' %}selected{% endif %}>Prêt</option>
+                                    <option value="retire">Traité</option>
+                                    <option value="rejete">Rejeté</option>
+                                </select>
+                            </td>
+                            <td class="text-end pe-4">
+                                <button class="btn btn-sm btn-dark px-3 btn-detail" 
+                                    data-service="{{ d.service.type_service }}"
+                                    data-nom-service="{{ d.service.nom }}"
+                                    data-json='{
+                                        "num": "{{ d.numero_demande }}",
+                                        "d_nom": "{{ d.nom_demandeur }}", "d_mail": "{{ d.email_demandeur }}", "d_tel": "{{ d.tel_demandeur }}",
+                                        "nom": "{{ d.nom }}", "prenom": "{{ d.prenom }}", "nais_date": "{{ d.date_naissance|date:"d/m/Y" }}", "nais_lieu": "{{ d.lieu_naissance }}",
+                                        "pere": "{{ d.nom_pere }}", "mere": "{{ d.nom_mere }}", "annee": "{{ d.annee_acte }}", "numext": "{{ d.numero_extrait }}",
+                                        "concerne": "{{ d.nom_concerne }}", "epoux1": "{{ d.nom_epoux1 }}", "epoux2": "{{ d.nom_epoux2 }}",
+                                        "mar_date": "{{ d.date_mariage|date:"d/m/Y" }}", "mar_lieu": "{{ d.lieu_mariage }}",
+                                        "defunt": "{{ d.nom_defunt }}", "deces_date": "{{ d.date_deces|date:"d/m/Y" }}", "lien": "{{ d.lien_parente }}"
+                                    }'
+                                    data-bs-toggle="modal" data-bs-target="#modalDetail">Détails</button>
+                            </td>
+                        </tr>
+                        {% empty %}<tr><td colspan="5" class="text-center py-4">Aucune demande en cours</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h4 class="fw-bold mb-3 text-success">Historique (Traités)</h4>
+        <div class="card custom-table-card">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="bg-light"><tr><th class="ps-4">N°</th><th>Service</th><th>Demandeur</th><th>Statut</th></tr></thead>
+                    <tbody>
+                        {% for d in demandes_traitees %}
+                        <tr class="text-muted">
+                            <td class="ps-4">#{{ d.numero_demande }}</td>
+                            <td>{{ d.service.nom }}</td>
+                            <td>{{ d.nom_demandeur }}</td>
+                            <td><span class="badge bg-success-subtle text-success">Livré / Retiré</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-legalisations" class="dash-section">
+        <h4 class="fw-bold mb-4">Documents à légaliser</h4>
+        <div class="card custom-table-card">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="bg-light"><tr><th class="ps-4">Code Suivi</th><th>Type</th><th>Statut</th><th>Document</th></tr></thead>
+                    <tbody>
+                        {% for leg in demandes_legalisation %}
+                        <tr>
+                            <td class="ps-4 fw-bold">#{{ leg.code_suivi }}</td>
+                            <td>{{ leg.type_legalisation.titre }}</td>
+                            <td>
+                                <select class="form-select form-select-sm status-changer" data-id="{{ leg.id }}">
+                                    <option value="attente" {% if leg.statut == 'attente' %}selected{% endif %}>En attente</option>
+                                    <option value="en_cours" {% if leg.statut == 'en_cours' %}selected{% endif %}>En cours</option>
+                                    <option value="pret" {% if leg.statut == 'pret' %}selected{% endif %}>Prêt</option>
+                                    <option value="traitee">Traité</option>
+                                    <option value="rejete" >Rejeté</option>
+                                </select>
+                            </td>
+                            <td><a href="{{ leg.fichier.url }}" target="_blank" class="btn btn-sm btn-outline-danger"><i class="bi bi-file-earmark-pdf"></i> Voir</a>
+                                <a href="{{ leg.fichier.url }}" download class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i> Télécharger</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <h4 class="fw-bold mb-3 text-success">Historique Documents Légalisés</h4>
+        <div class="card custom-table-card">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="bg-light"><tr><th class="ps-4">Code Suivi</th><th>Type</th><th>Statut</th></thead>
+                    <tbody>
+                        {% for d in demandes_legalisees %}
+                        <tr class="text-muted">
+                            <td class="ps-4">#{{ d.code_suivi }}</td>
+                            <td>{{ d.type_legalisation.titre }}</td>
+                            <td><span class="badge bg-success-subtle text-success">Livré / Retiré</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-messages" class="dash-section">
+        <h4 class="fw-bold mb-4">Messages </h4>
+        <div class="row g-3">
+            {% for m in messages_mairie %}
+            <div class="col-md-4">
+                <div class="stat-card h-100 d-flex flex-column shadow-sm">
+                    <div class="d-flex justify-content-between mb-3 align-items-center">
+                        <span class="badge bg-secondary-subtle text-secondary">{{ m.telephone }}</span>
+                        <i class="bi bi-chat-left-text text-primary"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1">{{ m.nom }} {{ m.prenom }}</h6>
+                    <p class="small text-primary mb-3">{{ m.email }}</p>
+                    <p class="small text-muted flex-grow-1" style="font-style: italic;">"{{ m.message }}"</p>
+                    <hr>
+                    <a href="mailto:{{ m.email }}" class="btn btn-sm btn-light w-100">Répondre</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDetail" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white p-4">
+                <h5 class="modal-title fw-bold"><i class="bi bi-info-circle me-2"></i>Détails Complet de l'Acte</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4" id="modal-body-inject">
+                </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function toggleSidebar() { $('#sidebar').toggleClass('show'); }
+    
+    function switchTab(tabId, el) {
+        $('.dash-section').removeClass('active');
+        $(`#section-${tabId}`).addClass('active');
+        $('.nav-link').removeClass('active text-primary');
+        $(el).addClass('active');
+        if(window.innerWidth < 992) toggleSidebar();
+    }
+
+    // GESTION CHANGEMENT STATUT (Persistant)
+    $('.status-changer').change(function() {
+        const id = $(this).data('id');
+        const val = $(this).val();
+        
+        $.post("{% url 'gestion:ajax_changer_statut' %}", {
+            'demande_id': id,
+            'statut': val,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(res) {
+            if(res.success) {
+                // On recharge pour refléter le tri de ta vue Django
+                location.reload(); 
+            }
+            });
+        $.post("{% url 'gestion:ajax_changer_statut_legalisation' %}", {
+            'demande_id': id,
+            'statut': val,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        }, function(res) {
+            if(res.success) {
+                // On recharge pour refléter le tri de ta vue Django
+                location.reload(); 
+            }
+        });
+    });    
+
+    // CONSTRUCTION DYNAMIQUE DU "VOIR PLUS"
+    $('.btn-detail').click(function() {
+        const type = $(this).data('service');
+        const serviceNom = $(this).data('nom-service');
+        const data = $(this).data('json');
+        
+        let html = `
+            <div class="section-header">COORDONNÉES DU DEMANDEUR</div>
+            <div class="row px-3">
+                <div class="col-md-4"><div class="detail-label">Nom Complet</div><div class="detail-value">${data.d_nom}</div></div>
+                <div class="col-md-4"><div class="detail-label">Email</div><div class="detail-value">${data.d_mail}</div></div>
+                <div class="col-md-4"><div class="detail-label">Téléphone</div><div class="detail-value">${data.d_tel}</div></div>
+            </div>
+
+            <div class="section-header mt-3">INFORMATIONS DE L'ACTE : ${serviceNom.toUpperCase()}</div>
+            <div class="row px-3">`;
+
+        if (type === 'naissance') {
+            html += `
+                <div class="col-md-6"><div class="detail-label">Nom de l'enfant</div><div class="detail-value">${data.nom}</div></div>
+                <div class="col-md-6"><div class="detail-label">Prénom(s)</div><div class="detail-value">${data.prenom}</div></div>
+                <div class="col-md-6"><div class="detail-label">Date de naissance</div><div class="detail-value">${data.nais_date}</div></div>
+                <div class="col-md-6"><div class="detail-label">Lieu de naissance</div><div class="detail-value">${data.nais_lieu}</div></div>
+                <div class="col-md-6"><div class="detail-label">Père</div><div class="detail-value">${data.pere || 'N/A'}</div></div>
+                <div class="col-md-6"><div class="detail-label">Mère</div><div class="detail-value">${data.mere || 'N/A'}</div></div>
+                <div class="col-md-4"><div class="detail-label">Année Acte</div><div class="detail-value">${data.annee || '-'}</div></div>
+                <div class="col-md-4"><div class="detail-label">N° Extrait</div><div class="detail-value">${data.numext || '-'}</div></div>
+                <div class="col-md-4"><div class="detail-label">Nom Concerné (si copie)</div><div class="detail-value">${data.concerne || '-'}</div></div>`;
+        } 
+        else if (type === 'mariage') {
+            html += `
+                <div class="col-md-6"><div class="detail-label">Époux 1</div><div class="detail-value">${data.epoux1}</div></div>
+                <div class="col-md-6"><div class="detail-label">Époux 2</div><div class="detail-value">${data.epoux2}</div></div>
+                <div class="col-md-6"><div class="detail-label">Date Mariage</div><div class="detail-value">${data.mar_date}</div></div>
+                <div class="col-md-6"><div class="detail-label">Lieu Mariage</div><div class="detail-value">${data.mar_lieu}</div></div>`;
+        }
+        else if (type === 'deces') {
+            html += `
+                <div class="col-md-6"><div class="detail-label">Défunt</div><div class="detail-value">${data.defunt}</div></div>
+                <div class="col-md-6"><div class="detail-label">Date Décès</div><div class="detail-value">${data.deces_date}</div></div>
+                <div class="col-md-12"><div class="detail-label">Lien de parenté</div><div class="detail-value">${data.lien}</div></div>`;
+        }
+
+        html += `</div>`;
+        $('#modal-body-inject').html(html);
+    });
+</script>
+
+</body>
+</html>

@@ -3,14 +3,17 @@
 <section class="py-5 contact-section" style="background:  url('{{ contact.image.url }}') scroll center/cover;">
 {% endfor %}
     <div class="container py-4">
-        {% for t in en_tetes %}
-        <div class="row justify-content-center mb-5" data-aos="zoom-in-down">
-            <div class="col-lg-7 text-center">
-                <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill mb-3">{{ t.titre }}</span>
-                <h2 class="display-5 fw-bold text-dark mb-3">{{ t.sous_titre }}</h2>
-                <div class="divider-center mb-3"></div>
-                <p class="lead text-muted">{{ t.description }}</p>
+        {% for t in en_tetes_contact %}
+        <!-- En-tête de la page -->
+        <div class="page-header text-center mb-5">
+            <div class="d-inline-block mb-3">
+                <div class="header-line mx-auto mb-2" style="width: 80px; height: 4px; background: #0d0e0d; border-radius: 2px;"></div>
+                <span class="text-uppercase fw-bold" style="color: #161716; letter-spacing: 1.5px;">{{ t.titre }}</span>
             </div>
+            <h1 class="display-4 fw-bold mb-3">{{ t.sous_titre }}</h1>
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">
+                {{ t.description }}
+            </p>
         </div>
         {% endfor %}
 

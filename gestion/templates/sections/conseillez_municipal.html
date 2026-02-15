@@ -1,7 +1,7 @@
 {% load static %}
         <section class="team light-brown-bg" id="team">
             <div class="container">
-                {% for t in en_tetes %}
+                {% for t in en_tetes_conseillez_municipal %}
                 <div class="row">
                     <div class="col-12">
                         <div class="herotext text-center pb-5  animated" data-animation="fadeInUp" data-animation-delay="200">
@@ -13,21 +13,27 @@
                 </div>
                 {% endfor %}
                 <div class="team-carousel animated" data-animation="fadeInUp" data-animation-delay="300">
-                {% for team in teams %}
+                     {% for team in teams %}
                     <div class="block">
-                        <h1><Strong>{{ team.fonction }}</Strong></h1>
-                        <div class="pic pb-4"><img src="{{ team.image.url }}" class="img-fluid" alt=""></div>
+                        {% if team.fonction %}
+                        <h1><Strong>{{ team.fonction|default:'' }}</Strong></h1>
+                        {% endif %}
+                        {% if team.image %}
+                        <div class="pic pb-4"><img src="{{ team.image.url|default:'' }}" class="img-fluid" alt=""></div>
+                        {% endif %}
                         <div class="details">
-                            <h2>{{ team.nom }}</h2>
-                            <h6>{{ team.prenom }}</h6>
+                            {% if team.nom and team.prenom %}
+                            <h2>{{ team.nom|default:'' }}</h2>
+                            <h6>{{ team.prenom|default:'' }}</h6>
+                            {% endif %}
                             <ul class="socialmedia pt-2">
-                                <li><a href=""><i class="lab la-twitter"></i></a></li>
-                                <li><a href=""><i class="lab la-facebook-f"></i></a></li>
-                                <li><a href=""><i class="lab la-dribbble"></i></a></li>
+                                {% for icon in team.icon %}
+                                <li><a href="#"><i class="lab {{ icon }}"></i></a></li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
-                {% endfor %}
+                    {% endfor %}
                 </div>
             </div>
         </section>
@@ -365,3 +371,4 @@ h1 {
     transform: translateY(-15px) rotateX(5deg);
 }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">

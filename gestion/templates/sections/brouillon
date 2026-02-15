@@ -1,40 +1,461 @@
-Tiassalé n'est pas simplement une ville, c'est un sanctuaire de la mémoire ivoirienne. 
-                        Bien avant que les cartes coloniales ne tracent ses contours, cette terre était déjà le théâtre 
-                        d'échanges majeurs. Fondée au cœur des migrations des peuples Baoulé et Agni, elle tire sa 
-                        force de sa position géographique unique. Le nom même de Tiassalé porte en lui une charge 
-                        historique profonde, évoquant le souvenir d'un carrefour où l'on déposait non seulement les 
-                        marchandises, mais aussi les espoirs d'un peuple en mouvement.
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Mairie | Administration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --dark-color: #1e293b;
+            --bg-body: #f8fafc;
+            --sidebar-bg: #0f172a;
+        }
 
+        body { 
+            background: var(--bg-body); 
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
 
+        /* Sidebar Design */
+        .sidebar {
+            height: 100vh;
+            background: var(--sidebar-bg);
+            color: white;
+            position: fixed;
+            width: 260px;
+            padding-top: 25px;
+            z-index: 1000;
+        }
 
-À l'époque pré-coloniale, elle s'imposa comme le centre névralgique du commerce entre le nord 
-                        et le sud, profitant de la navigabilité du fleuve Bandama. L'arrivée de l'administration 
-                        coloniale à la fin du XIXe siècle transforma ce comptoir traditionnel en un poste stratégique 
-                        pour l'exportation du bois, du café et du cacao. Le pont monumental, inauguré en 1934, 
-                        ne fut pas seulement un exploit d'ingénierie, mais le verrou qui ouvrit les portes du 
-                        développement économique de toute la région de l'Agnéby-Tiassa.
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
 
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
 
- À travers les guerres, les résistances et enfin l'indépendance, Tiassalé a su préserver son 
-                        identité de "Cité du Confluent". Elle demeure aujourd'hui un symbole de résilience et de 
-                        brassage culturel, où chaque pierre et chaque courant d'eau racontent une part de l'âme de la 
-                        Côte d'Ivoire.
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+        }
 
+        /* Cards & Stats */
+        .card-stat { 
+            border: none;
+            border-radius: 16px; 
+            background: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+            border-bottom: 4px solid transparent;
+            transition: 0.3s;
+        }
+        .card-stat:hover { transform: translateY(-5px); }
 
+        .section-title { 
+            font-weight: 700; 
+            color: #0f172a; 
+            margin: 40px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-Le fleuve Bandama n'est pas qu'un simple cours d'eau ; c'est le poumon historique de Tiassalé. 
-                    C'est ici que le destin de la ville s'est scellé, au point de rencontre avec le N'Zi. 
-                    Pendant des siècles, ce fleuve a servi de route naturelle pour les grandes pirogues de commerce 
-                    et de barrière protectrice pour les populations locales. Aujourd'hui encore, il rythme le climat 
-                    et l'économie agricole de la cité, offrant un paysage majestueux qui force le respect.
+        /* Table Design */
+        .custom-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+            background: white;
+            overflow: hidden;
+        }
 
+        .table thead { background: #f8fafc; }
+        .table thead th { 
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            padding: 18px;
+            border: none;
+        }
+        .table tbody td { padding: 18px; vertical-align: middle; border-color: #f1f5f9; }
 
-<li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="services.html" id="servicesDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas me-1"></i>Services
+        /* Form elements */
+        .statut-select {
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .badge-custom {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar d-none d-lg-block">
+    <div class="px-4 mb-5 text-center text-lg-start">
+        <h4 class="fw-bold text-white"><i class="bi bi-bank2 me-2 text-primary"></i> MairieAdmin</h4>
+    </div>
+    <nav class="nav flex-column">
+        <a class="nav-link active" href="#"><i class="bi bi-grid-1x2 me-3"></i> Dashboard</a>
+        <a class="nav-link" href="#"><i class="bi bi-file-earmark-text me-3"></i> Services</a>
+        <a class="nav-link" href="#"><i class="bi bi-shield-check me-3"></i> Légalisations</a>
+        <a class="nav-link" href="#"><i class="bi bi-chat-left-text me-3"></i> Messages</a>
+        <div class="mt-5 px-4 small text-muted text-uppercase fw-bold">Compte</div>
+        <a class="nav-link" href="#"><i class="bi bi-person me-3"></i> Profil</a>
+        <a class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-3"></i> Déconnexion</a>
+    </nav>
+</div>
+
+<div class="main-content">
+    
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold m-0">Tableau de Bord</h2>
+            <p class="text-secondary">Gestion administrative en temps réel</p>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-white border shadow-sm dropdown-toggle rounded-3" type="button" data-bs-toggle="dropdown">
+                <i class="bi bi-calendar3 me-2"></i> {% now "d F Y" %}
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-2">
+        <div class="col-md-3">
+            <div class="card card-stat p-4" style="border-bottom-color: var(--primary-color);">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted small text-uppercase fw-bold">En attente</h6>
+                        <h3 class="fw-bold">{{ stats.services }}</h3>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle" style="height: fit-content;">
+                        <i class="bi bi-hourglass-split text-primary fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-stat p-4" style="border-bottom-color: var(--success-color);">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted small text-uppercase fw-bold">Traitées</h6>
+                        <h3 class="fw-bold">{{ stats.traitees }}</h3>
+                    </div>
+                    <div class="bg-success bg-opacity-10 p-3 rounded-circle" style="height: fit-content;">
+                        <i class="bi bi-check2-all text-success fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-stat p-4" style="border-bottom-color: var(--warning-color);">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted small text-uppercase fw-bold">Légalisations</h6>
+                        <h3 class="fw-bold">{{ stats.legalisations }}</h3>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 p-3 rounded-circle" style="height: fit-content;">
+                        <i class="bi bi-patch-check text-warning fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-stat p-4" style="border-bottom-color: var(--dark-color);">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted small text-uppercase fw-bold">Messages</h6>
+                        <h3 class="fw-bold">{{ stats.messages }}</h3>
+                    </div>
+                    <div class="bg-dark bg-opacity-10 p-3 rounded-circle" style="height: fit-content;">
+                        <i class="bi bi-chat-dots text-dark fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="section-title"><i class="bi bi-collection text-primary"></i> Demandes en attente</h4>
+    <div class="card custom-card mb-5">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>N° Demande</th>
+                        <th>Service</th>
+                        <th>Demandeur</th>
+                        <th>Coordonnées</th>
+                        <th>Statut / Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for demande in demandes_services %}
+                    <tr>
+                        <td><span class="badge bg-light text-primary border px-3 py-2">#{{ demande.numero_demande }}</span></td>
+                        <td class="fw-semibold">{{ demande.service.nom }}</td>
+                        <td class="fw-bold">{{ demande.nom_demandeur }}</td>
+                        <td>
+                            <div class="small">{{ demande.email_demandeur }}</div>
+                            <div class="text-muted small">{{ demande.tel_demandeur }}</div>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm statut-select shadow-sm" data-id="{{ demande.id }}">
+                                <option value="attente" {% if demande.statut == 'attente' %}selected{% endif %}>⏳ En attente</option>
+                                <option value="en_cours" {% if demande.statut == 'en_cours' %}selected{% endif %}>⚙️ En cours</option>
+                                <option value="pret" {% if demande.statut == 'pret' %}selected{% endif %}>📦 Prêt</option>
+                                <option value="retire" {% if demande.statut == 'retire' %}selected{% endif %}>✅ Traité</option>
+                                <option value="rejete">❌ Rejeté</option>
+                            </select>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="text-center py-5 text-muted">Aucune demande en cours de traitement.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h4 class="section-title"><i class="bi bi-check-circle-fill text-success"></i> Historique des traités</h4>
+    <div class="card custom-card mb-5">
+        <div class="table-responsive">
+            <table class="table table-hover" id="table-traitees">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Service</th>
+                        <th>Demandeur</th>
+                        <th>Téléphone</th>
+                        <th>État</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for demande in demandes_traitees %}
+                    <tr>
+                        <td class="fw-bold text-muted">#{{ demande.numero_demande }}</td>
+                        <td>{{ demande.service.nom }}</td>
+                        <td>{{ demande.nom_demandeur }}</td>
+                        <td>{{ demande.tel_demandeur }}</td>
+                        <td><span class="badge bg-success-subtle text-success border border-success px-3">Traité</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h4 class="section-title"><i class="bi bi-file-earmark-check text-warning"></i> Légalisations</h4>
+    <div class="card custom-card mb-5">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Code Suivi</th>
+                        <th>Type de Document</th>
+                        <th>Date</th>
+                        <th>Document</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for leg in demandes_legalisation %}
+                    <tr>
+                        <td><span class="fw-bold text-success">{{ leg.code_suivi }}</span></td>
+                        <td>{{ leg.type_legalisation.titre }}</td>
+                        <td>{{ leg.date|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <a href="{{ leg.fichier.url }}" class="btn btn-sm btn-outline-primary rounded-pill px-3" download>
+                                <i class="bi bi-download me-1"></i> Télécharger
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="services.html">Services</a></li>
-                                <li><a class="dropdown-item" href="services.html#etat-civil">État Civil</a></li>
-                            </ul>
-                        </li>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-center py-4 text-muted">Aucune demande de légalisation.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h4 class="section-title"><i class="bi bi-envelope-at text-dark"></i> Messages Mairie</h4>
+    <div class="card custom-card mb-5">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Citoyen</th>
+                        <th>Contact</th>
+                        <th>Message</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for msg in messages_mairie %}
+                    <tr>
+                        <td><div class="fw-bold">{{ msg.nom }} {{ msg.prenom }}</div></td>
+                        <td><small>{{ msg.email }}</small></td>
+                        <td class="text-muted small">{{ msg.message|truncatechars:60 }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-light border" data-bs-toggle="modal" data-bs-target="#modalMsg{{ forloop.counter }}">
+                                Voir plus
+                            </button>
+                        </td>
+                    </tr>
+
+                    <div class="modal fade" id="modalMsg{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow-lg">
+                                <div class="modal-header bg-light">
+                                    <h5 class="modal-title fw-bold">Message de {{ msg.nom }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body p-4">
+                                    <p class="mb-4 lead fs-6 text-dark">{{ msg.message }}</p>
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <a href="mailto:{{ msg.email }}" class="btn btn-primary"><i class="bi bi-reply me-2"></i>Répondre</a>
+                                        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <tr><td colspan="4" class="text-center py-4 text-muted">Aucun message reçu.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    // AJAX Statut Change
+    $('.statut-select').change(function(){
+        var select = $(this);
+        var row = select.closest('tr');
+        var demandeId = select.data('id');
+        var statut = select.val();
+
+        row.css('opacity', '0.5');
+
+        $.ajax({
+            url: "{% url 'gestion:ajax_changer_statut' %}",
+            method: "POST",
+            data: {
+                'demande_id': demandeId,
+                'statut': statut,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response){
+                row.css('opacity', '1');
+                if(response.success){
+                    if(response.action === 'supprime'){
+                        row.fadeOut(300, function(){ $(this).remove(); });
+                    } else if(response.action === 'mis_a_jour'){
+                        if(response.nouveau_statut === 'retire'){
+                            var clone = row.clone();
+                            clone.find('select').replaceWith('<span class="badge bg-success-subtle text-success border border-success px-3">Traité</span>');
+                            $('#table-traitees tbody').prepend(clone.hide().fadeIn());
+                            row.remove();
+                        }
+                    }
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(){
+                row.css('opacity', '1');
+                alert('Erreur de connexion au serveur.');
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
+
+
+
+@login_required
+@require_POST
+def ajax_changer_statut(request):
+    if not request.user.is_staff:
+        return JsonResponse({'success': False, 'message': 'Accès refusé'})
+
+    demande_id = request.POST.get('demande_id')
+    demande = DemandeService.objects.filter(id=demande_id).first()
+    if not demande:
+        return JsonResponse({'success': False, 'message': 'Demande introuvable'})
+
+    nouveau_statut = request.POST.get('statut')
+
+    if nouveau_statut == 'rejete':
+        demande.delete()
+        return JsonResponse({'success': True, 'action': 'supprime'})
+    else:
+        demande.statut = nouveau_statut
+        demande.save()
+        return JsonResponse({
+            'success': True,
+            'action': 'mis_a_jour',
+            'nouveau_statut': nouveau_statut,
+            'display': demande.get_statut_display()
+        })
+    
+@login_required
+def dashboard_mairie(request):
+    if not request.user.is_staff:
+        return redirect('gestion:accueil')
+
+    demandes_services = DemandeService.objects.exclude(statut='retire').order_by('-date_soumission')
+    demandes_traitees = DemandeService.objects.filter(statut='retire').order_by('-date_soumission')
+    demandes_legalisation = DemandeLegalisation.objects.all().order_by('-date')
+    messages_mairie = MessageMairie.objects.all().order_by('-id')
+
+    stats = {
+        'services': demandes_services.count(),
+        'traitees': demandes_traitees.count(),
+        'legalisations': demandes_legalisation.count(),
+        'messages': messages_mairie.count()
+    }
+
+    context = {
+        'demandes_services': demandes_services,
+        'demandes_traitees': demandes_traitees,
+        'demandes_legalisation': demandes_legalisation,
+        'messages_mairie': messages_mairie,
+        'stats': stats,
+    }
+
+    return render(request, 'dashboard.html', context)

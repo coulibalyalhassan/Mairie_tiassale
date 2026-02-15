@@ -3,7 +3,7 @@
     <div class="container">
         <!-- En-tête -->
         <div class="row mb-5">
-        {% for t in en_tetes %}
+        {% for t in en_tetes_image %}
             <div class="col-12 text-center">
                 <h2 class="display-5 fw-bold mb-3">{{ t.titre }}</h2>
                 <p class="lead text-muted mx-auto" style="max-width: 700px;">
@@ -22,9 +22,6 @@
                          class="img-fluid w-100" 
                          alt="Monument de la ville" 
                          style="height: 250px; object-fit: cover;">
-                    <div class="image-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-end p-3">
-                        <h6 class="text-white fw-bold mb-0">{{ img.titre }}</h6>
-                    </div>
                 </div>
             </div>
             {% endfor %}

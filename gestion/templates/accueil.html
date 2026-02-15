@@ -4,6 +4,6 @@
 
     {% block 'contenu_principal' %}
         {% for ps in sections %}
-            {% include "sections/"|add:ps.section.nom|add:".html" %}
+            {% include "sections/"|add:ps.section.nom|lower|add:".html" %}
         {% endfor %}
     {% endblock %}
