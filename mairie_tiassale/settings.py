@@ -79,11 +79,11 @@ WSGI_APPLICATION = 'mairie_tiassale.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mairie',        # Nom de la base de données
+        'NAME': 'railway',        # Nom de la base de données
         'USER': 'root',        # Votre utilisateur MySQL
-        'PASSWORD': 'LASSAN',   # Mot de passe MySQL
-        'HOST': 'localhost',                # Ou l'adresse IP de votre serveur
-        'PORT': '3306',                     # Port MySQL par défaut
+        'PASSWORD': 'AoIvzksaVjTSmbCOmXrVamDNogBCGKxO',   # Mot de passe MySQL
+        'HOST': 'switchyard.proxy.rlwy.net',                # Ou l'adresse IP de votre serveur
+        'PORT': '59185',                     # Port MySQL par défaut
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             'charset': 'utf8mb4',
