@@ -23,6 +23,7 @@
     </div>
 </section>
 
+
 {% for t in en_tetes_services %}
 <!-- Services d'État Civil Détails -->
 <section id="services" class="py-5">
@@ -113,6 +114,10 @@
                                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-{{ forloop.counter }}">
                                         <i class="fas fa-paper-plane me-2"></i>Faire une demande
                                     </button>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSuivi">
+                                        <i class="fas fa-eye me-2"></i>Consulter une demande
+                                    </button>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -123,6 +128,7 @@
         {% endfor %}  
     </div>
 </section>
+
 
 <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

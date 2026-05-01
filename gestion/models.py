@@ -5,6 +5,8 @@ import string
 from django.utils import timezone
 from django.utils.text import slugify
 
+
+
 class Page(models.Model):
      nom = models.CharField(max_length=32, verbose_name="Nom de la page")
      sections = models.ManyToManyField(
@@ -375,3 +377,7 @@ class DemandeLegalisation(models.Model):
 
     def __str__(self):
         return f"{self.type_legalisation.titre} - {self.code_suivi}"
+
+
+
+

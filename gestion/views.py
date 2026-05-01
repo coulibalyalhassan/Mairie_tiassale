@@ -91,6 +91,30 @@ def get_page(request, slug):
             context["services"]=Service.objects.all()
             context["piecelist"]=ServiceList.objects.all()
 
+        elif s == "suivi":
+            demande = None
+            type_demande = None
+            erreur = None
+
+            if request.method == "POST":
+                code = request.POST.get("code")
+
+                # Cherche dans DemandeService
+                try:
+                    demande = DemandeService.objects.get(numero_demande=code)
+                    type_demande = "Service administratif"
+                except DemandeService.DoesNotExist:
+            
+                    # Cherche dans DemandeLegalisation
+                    try:
+                        demande = DemandeLegalisation.objects.get(code_suivi=code)
+                        type_demande = "Légalisation"
+                    except DemandeLegalisation.DoesNotExist:
+                        erreur = "Code introuvable. votre demande n'existe pas ou a été rejetée."
+            context["demande"] = demande
+            context["type_demande"] = type_demande
+            context["erreur"] = erreur
+
         elif s == "slider":
             context["slides"]=Slider.objects.all()
 
@@ -124,7 +148,7 @@ def get_page(request, slug):
                 return redirect(request.META.get('HTTP_REFERER', '/'))
 
     context["sections"] = sections
-    return render(request, 'accueil.html', context)
+    return render(request, 'index.html', context)
 
 def detail_actualite(request, id):
     detail = get_object_or_404(Actualite, id=id)
@@ -194,7 +218,6 @@ def dashboard_mairie(request):
 
     demandes_services = DemandeService.objects.exclude(statut='retire').order_by('-date_soumission')
     demandes_traitees = DemandeService.objects.filter(statut='retire').order_by('-date_soumission')
-    demandes_legalisation = DemandeLegalisation.objects.all().order_by('-date')
     demandes_legalisation = DemandeLegalisation.objects.exclude(statut='traitee').order_by('-date')
     demandes_legalisees = DemandeLegalisation.objects.filter(statut='traitee').order_by('-date')
     messages_mairie = MessageMairie.objects.all().order_by('-id')
@@ -217,3 +240,4 @@ def dashboard_mairie(request):
     }
 
     return render(request, 'dashboard.html', context)
+

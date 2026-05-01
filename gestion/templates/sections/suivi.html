@@ -1,0 +1,83 @@
+<!-- Modal Suivi -->
+ 
+<div class="modal fade" id="modalSuivi" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-search me-2"></i>Suivi de votre demande</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="modalSuiviBody">
+                <!-- FORMULAIRE -->
+                <form method="POST" id="formSuivi">
+                    {% csrf_token %}
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <input type="text" name="code" class="form-control"
+                                   placeholder="Entrez votre code de suivi" required>
+                        </div>
+                        <div class="col-md-4 mt-2 mt-md-0">
+                            <button class="btn btn-primary w-100">Rechercher</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- ERREUR et RESULTAT -->
+                <div id="suiviResult">
+                    {% if erreur %}
+                        <div class="alert alert-danger mt-4 text-center">{{ erreur }}</div>
+                    {% endif %}
+                    {% if demande %}
+                        <div class="card mt-4 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="mb-3">Résultat</h5>
+                                {% if type_demande == "Service administratif" %}
+                                    <p><strong>Numéro :</strong> {{ demande.numero_demande }}</p>
+                                    <p><strong>Service :</strong> {{ demande.service.nom }}</p>
+                                    <p><strong>Statut :</strong> {{ demande.get_statut_display }}</p>
+
+                                    {% if demande.statut == "pret" %}
+                                        <div class="alert alert-success">Votre document est prêt à retirer.</div>
+                                    {% elif demande.statut == "en_cours" %}
+                                        <div class="alert alert-info">Votre demande est en cours de traitement.</div>
+                                    {% endif %}
+                                {% endif %}
+                                {% if type_demande == "Légalisation" %}
+                                    <p><strong>Code :</strong> {{ demande.code_suivi }}</p>
+                                    <p><strong>Type :</strong> {{ demande.type_legalisation.titre }}</p>
+                                    <p><strong>Statut :</strong> {{ demande.get_statut_display }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var modalEl = document.getElementById('modalSuivi');
+
+    // Réinitialiser le contenu du résultat quand la modal est fermée
+    modalEl.addEventListener('hidden.bs.modal', function () {
+        var result = document.getElementById('suiviResult');
+        if(result){
+            result.innerHTML = ''; // Vide les anciens résultats
+        }
+        // Optionnel : vider le champ code
+        document.querySelector('#formSuivi input[name="code"]').value = '';
+    });
+
+    // Si une demande ou erreur existe au chargement, on l'affiche
+    
+</script>
+{% if demande or erreur %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var modal = new bootstrap.Modal(document.getElementById('modalSuivi'));
+        modal.show();
+    });
+</script>
+{% endif %}

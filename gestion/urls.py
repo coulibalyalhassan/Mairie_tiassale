@@ -6,7 +6,7 @@ from . import views
 
 app_name = 'gestion'
 urlpatterns = [
-    path('',get_page, {'slug': 'accueil'}, name='accueil'),
+    path('',get_page, {'slug': 'index'}, name='index'),
     path('<str:slug>.html', get_page, name='get_page'),
     path('actualite/<int:id>/', detail_actualite, name='detail_actualites'),
     path('admin-mairie/', views.dashboard_mairie, name='dashboard_mairie'),

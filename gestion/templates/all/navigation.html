@@ -30,10 +30,10 @@
                             {% if user.is_authenticated and user.is_staff %}
                             <li class="nav-item">
                                 <a class="nav-link fw-bold text-warning" href="{% url 'gestion:dashboard_mairie' %}">
-                                    <i class="fas me-1"></i>Administration
+                                    🏛️ Administration
                                 </a>
                             </li>
-                            {% else %}
+                            {% endif %}
                         </li>
                     </ul>
                     <div class="d-flex ms-lg-3">
@@ -41,7 +41,6 @@
                             <i class="fas fa-calendar-check me-1"></i> Prendre RDV
                         </a>
                     </div>
-                    {% endif %}
                 </div>
             </div>
         </nav>
